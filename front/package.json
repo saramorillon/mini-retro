@@ -1,0 +1,21 @@
+{
+  "name": "@mini-retro/frontend",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prebuild": "tsc",
+    "build": "vite build",
+    "watch": "vite dev"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.1.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "jsdom": "^24.1.0",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "uuid": "11.0.0-0"
+  }
+}

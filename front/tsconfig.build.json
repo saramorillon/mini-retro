@@ -1,0 +1,12 @@
+{
+  "include": ["src", "tests", "vite.config.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "outDir": "dist",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true
+  }
+}

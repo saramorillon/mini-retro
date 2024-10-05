@@ -1,0 +1,33 @@
+{
+  "name": "@mini-retro/backend",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Sara Morillon",
+    "url": "https://saramorillon.com/"
+  },
+  "repository": {
+    "url": "https://github.com/saramorillon/mini-retro"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node src/index.js",
+    "watch": "tsx --watch-path src -r dotenv/config --inspect=9999 src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.7",
+    "dotenv": "^16.4.5",
+    "mockdate": "^3.0.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.5.2",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "@saramorillon/http-router": "^1.3.0",
+    "prisma": "^5.20.0",
+    "zod": "^3.23.8"
+  }
+}
