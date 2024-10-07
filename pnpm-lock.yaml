@@ -20,6 +20,9 @@ importers:
       '@saramorillon/http-router':
         specifier: ^1.3.0
         version: 1.3.0
+      '@saramorillon/logger':
+        specifier: ^1.3.0
+        version: 1.3.0
       prisma:
         specifier: ^5.20.0
         version: 5.20.0
@@ -540,6 +543,9 @@ packages:
 
   '@saramorillon/http-router@1.3.0':
     resolution: {integrity: sha512-PamtQ8dAA+qimQ0CkF9DFb8C48hRZHDB09WsKuZ/S5gnXEuKr3cqYJpU/2raN3+xSu6EJABg0CoOIPpbefDpgQ==}
+
+  '@saramorillon/logger@1.3.0':
+    resolution: {integrity: sha512-yt1BsFO0VE0awmRdMwGrG7sdzCtdpfenC2H/c/2LB71untE4Yzk5pTcCFoyfJX8y4sk/wADExCIcX/itfpxcWg==}
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -1456,6 +1462,8 @@ snapshots:
     optional: true
 
   '@saramorillon/http-router@1.3.0': {}
+
+  '@saramorillon/logger@1.3.0': {}
 
   '@sinclair/typebox@0.27.8': {}
 

@@ -1,6 +1,6 @@
 import { getJsonBody } from '@saramorillon/http-router'
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { z } from 'zod'
+import { ZodError, z } from 'zod'
 import { prisma } from '../prisma.js'
 
 const schema = {
@@ -19,24 +19,48 @@ const schema = {
 }
 
 export async function getTickets(req: IncomingMessage, res: ServerResponse) {
-  const { boardId, user } = schema.list.parse(Object.fromEntries(req.query.entries()))
-  const tickets = await prisma.ticket.findMany({ where: { boardId, author: { not: user } } })
-  res.statusCode = 200
-  res.end(JSON.stringify(tickets))
+  const { success, failure } = req.logger.start('get_tickets', { query: req.query.toString() })
+  try {
+    const { boardId, user } = schema.list.parse(Object.fromEntries(req.query.entries()))
+    const tickets = await prisma.ticket.findMany({ where: { boardId, author: { not: user } } })
+    res.statusCode = 200
+    res.end(JSON.stringify(tickets))
+    success()
+  } catch (error) {
+    res.statusCode = error instanceof ZodError ? 400 : 500
+    res.end()
+    failure(error)
+  }
 }
 
 export async function putTicket(req: IncomingMessage, res: ServerResponse) {
-  const { id } = schema.id.parse(req.params)
-  const body = await getJsonBody(req)
-  const data = schema.body.parse(body)
-  await prisma.ticket.upsert({ where: { id }, create: { id, ...data }, update: data })
-  res.statusCode = 204
-  res.end()
+  const { success, failure } = req.logger.start('put_ticket', { params: req.params })
+  try {
+    const { id } = schema.id.parse(req.params)
+    const body = await getJsonBody(req)
+    const data = schema.body.parse(body)
+    await prisma.ticket.upsert({ where: { id }, create: { id, ...data }, update: data })
+    res.statusCode = 204
+    res.end()
+    success()
+  } catch (error) {
+    res.statusCode = error instanceof ZodError ? 400 : 500
+    res.end()
+    failure(error)
+  }
 }
 
 export async function deleteTicket(req: IncomingMessage, res: ServerResponse) {
-  const { id } = schema.id.parse(req.params)
-  await prisma.ticket.delete({ where: { id } })
-  res.statusCode = 204
-  res.end()
+  const { success, failure } = req.logger.start('delete_ticket', { params: req.params })
+  try {
+    const { id } = schema.id.parse(req.params)
+    await prisma.ticket.delete({ where: { id } })
+    res.statusCode = 204
+    res.end()
+    success()
+  } catch (error) {
+    res.statusCode = error instanceof ZodError ? 400 : 500
+    res.end()
+    failure(error)
+  }
 }
