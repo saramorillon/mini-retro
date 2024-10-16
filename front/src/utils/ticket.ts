@@ -1,56 +1,48 @@
 import { v4 } from 'uuid'
+import type { ITicket } from '../models/Ticket'
 import { deleteTicket, saveTicket } from '../services/tickets'
 
+const width = 200
+const height = 200
+
 export function createTicket(container: HTMLElement, startX: number, startY: number) {
-  let id = ''
-  const width = 200
-  const height = 200
-  let x = startX - width / 2
-  let y = startY - height / 2
+  const ticket: ITicket = {
+    id: v4(),
+    boardId: '',
+    author: '',
+    content: '',
+    hidden: true,
+    x: startX - width / 2,
+    y: startY - height / 2,
+  }
+
   let clickX = 0
   let clickY = 0
   let isMoving = false
   let isEditing = false
 
-  const ticket = document.createElement('textarea')
+  const editor = document.createElement('textarea')
+  editor.classList.add('ticket')
 
-  function reset() {
-    ticket.style.display = 'block'
-    ticket.style.position = 'absolute'
-    ticket.style.backgroundColor = 'red'
-    ticket.style.border = 'none'
-    ticket.style.overflow = 'auto'
-    ticket.style.width = `${width}px`
-    ticket.style.height = `${height}px`
-    ticket.style.zIndex = '2'
-    ticket.style.resize = 'none'
-    ticket.style.userSelect = 'none'
-    ticket.style.cursor = 'pointer'
-    ticket.setAttribute('readonly', 'true')
+  function render() {
+    editor.style.left = `${ticket.x}px`
+    editor.style.top = `${ticket.y}px`
+    if (isMoving) {
+      editor.setAttribute('readonly', 'true')
+    } else if (isEditing) {
+      editor.removeAttribute('readonly')
+      editor.focus()
+      editor.setSelectionRange(editor.value.length - 1, editor.value.length - 1)
+    }
   }
 
-  function move(x: number, y: number) {
-    ticket.style.left = `${x}px`
-    ticket.style.top = `${y}px`
-  }
-
-  function edit() {
-    ticket.style.border = '2px solid blue'
-    ticket.style.removeProperty('userSelect')
-    ticket.removeAttribute('readonly')
-    ticket.focus()
-    ticket.setSelectionRange(ticket.value.length - 1, ticket.value.length - 1)
-  }
-
-  reset()
-  move(x, y)
+  render()
 
   function onDragStart(event: MouseEvent) {
     event.stopPropagation()
     isMoving = true
-    onEditEnd(event)
-    clickX = event.clientX - x
-    clickY = event.clientY - y
+    clickX = event.clientX - ticket.x
+    clickY = event.clientY - ticket.y
     container.addEventListener('mousemove', onDragMove)
     container.addEventListener('mouseup', onDragEnd)
   }
@@ -58,9 +50,9 @@ export function createTicket(container: HTMLElement, startX: number, startY: num
   function onDragMove(event: MouseEvent) {
     event.stopPropagation()
     if (isMoving) {
-      x = event.clientX - clickX
-      y = event.clientY - clickY
-      move(x, y)
+      ticket.x = event.clientX - clickX
+      ticket.y = event.clientY - clickY
+      render()
     }
   }
 
@@ -76,32 +68,30 @@ export function createTicket(container: HTMLElement, startX: number, startY: num
   function onEditStart(event: MouseEvent) {
     event.stopPropagation()
     isEditing = true
-    edit()
-    container.addEventListener('click', onEditEnd)
+    render()
   }
 
-  function onEditEnd(event: MouseEvent) {
+  function onEditEnd(event: FocusEvent) {
     event.stopPropagation()
     if (isEditing) {
       isEditing = false
-      reset()
-      container.removeEventListener('click', onEditEnd)
-      if (!id) id = v4()
-      saveTicket(id, ticket.value)
+      render()
+      saveTicket(ticket)
     }
   }
 
   function onDelete(event: KeyboardEvent) {
     event.stopPropagation()
     if (!isEditing && event.key === 'Delete') {
-      if (id) deleteTicket(id)
-      container.removeChild(ticket)
+      deleteTicket(ticket)
+      container.removeChild(editor)
     }
   }
 
-  ticket.addEventListener('mousedown', onDragStart)
-  ticket.addEventListener('dblclick', onEditStart)
-  ticket.addEventListener('keyup', onDelete)
+  editor.addEventListener('mousedown', onDragStart)
+  editor.addEventListener('dblclick', onEditStart)
+  editor.addEventListener('blur', onEditEnd)
+  editor.addEventListener('keyup', onDelete)
 
-  container.appendChild(ticket)
+  container.appendChild(editor)
 }

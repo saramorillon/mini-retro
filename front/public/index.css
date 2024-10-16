@@ -1,4 +1,25 @@
 .lucide {
-    height: 1em;
-    width: 1em;
+  height: 1em;
+  width: 1em;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+.ticket {
+  display: block;
+  position: absolute;
+  border: none;
+  overflow: auto;
+  width: 200px;
+  height: 200px;
+  resize: none;
+  cursor: pointer;
+  transition: none;
+}
+
+.ticket:focus {
+  border: 1px solid black;
 }
